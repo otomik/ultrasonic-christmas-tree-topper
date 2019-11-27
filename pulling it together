@@ -1,0 +1,97 @@
+//Christmas Tree Distance Sensor
+//a christmas tree sensor for the IvyTech Computer Club based on a merger of three different Eli the Computer Guy tutorials.
+//Rev 1.0 11/3/19
+//https://www.elithecomputerguy.com/2019/06/hc-sr04-ultrasonic-distance-sensor-with-arduino/
+//https://www.elithecomputerguy.com/2019/06/hc-sr04-ultrasonic-distance-sensor-audio-alert-with-arduino/
+//https://www.elithecomputerguy.com/2019/06/16-x-2-lcd-screen-on-arduino/
+
+//pins on the LCD breadboard pin 1 on row 15, pin 16 on row 30 so think plus 14
+
+#include <LiquidCrystal.h>
+#include <Servo.h> 
+
+#define rs 12
+#define en 11
+#define d4 5
+#define d5 4
+#define d6 3
+#define d7 2
+
+#define trigPin 8
+#define echoPin 9
+#define buzzer 10
+
+#define servoPin 6
+Servo Servo1; 
+
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+long duration;
+float distanceCM;
+float distanceInch;
+int timer;
+int aCounter;
+bin acdfklg;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  lcd.begin(16, 2);
+  pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
+  pinMode(buzzer, OUTPUT);
+  Serial.begin(9600);
+  Servo1.attach(servoPin); 
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);
+
+  distanceCM = duration * 0.034 /2;
+  distanceInch = duration * 0.0133 /2;
+
+  Serial.print("Distance: ");
+  Serial.print(distanceCM);
+  Serial.print("  CM  =  ");
+  Serial.print(distanceInch);
+  Serial.println("  Inches");
+
+  if (distanceCM<80) {
+    digitalWrite(buzzer, HIGH);
+  }
+  else {
+    digitalWrite(buzzer, LOW);
+  }
+  lcd.setCursor(0, 0);
+  lcd.print(distanceCM);
+  lcd.setCursor(7, 0);
+  lcd.print("Centimeters"); 
+ 
+  lcd.setCursor(0, 1);
+  lcd.print(distanceInch);
+  lcd.setCursor(7, 1);
+  lcd.print("Inches");
+
+  timer = distanceInch * 10;
+
+  if (aCounter>170) {
+    aCounter = 5;
+  }
+  else {
+    Servo1.write(aCounter); 
+    aCounter = aCounter+5;
+ 
+   delay(200); 
+  }
+
+  delay(timer);
+
+
+
+}
