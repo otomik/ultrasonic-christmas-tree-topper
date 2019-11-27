@@ -30,7 +30,6 @@ float distanceCM;
 float distanceInch;
 int timer;
 int aCounter;
-bin acdfklg;
 
 
 void setup() {
@@ -62,7 +61,7 @@ void loop() {
   Serial.print(distanceInch);
   Serial.println("  Inches");
 
-  if (distanceCM<80) {
+  if (distanceCM<60) {
     digitalWrite(buzzer, HIGH);
   }
   else {
